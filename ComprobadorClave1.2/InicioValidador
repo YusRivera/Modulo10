@@ -1,0 +1,32 @@
+import java.util.*;
+
+public class InicioValidador {
+    public static void main(String[] args) {
+        Scanner lector = new Scanner(System.in);
+        List<Thread> tareas = new ArrayList<>();
+
+        System.out.println("Ingrese claves a analizar (escriba 'salir' para terminar):");
+
+        while (true) {
+            System.out.print("Clave: ");
+            String clave = lector.nextLine();
+
+            if (clave.equalsIgnoreCase("salir")) break;
+
+            Thread hilo = new Thread(new ComprobadorClave(clave));
+            hilo.start();
+            tareas.add(hilo);
+        }
+
+        tareas.forEach(h -> {
+            try {
+                h.join();
+            } catch (InterruptedException e) {
+                System.out.println("No se pudo esperar al hilo: " + e.getMessage());
+            }
+        });
+
+        System.out.println("Validación terminada. Revisa el archivo 'historial_claves.txt' para ver el resultado.");
+        lector.close();
+    }
+}
